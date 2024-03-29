@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Patch,
   Post,
@@ -20,16 +21,22 @@ import { promises } from 'readline';
 import { AuthGuard } from '@nestjs/passport';
 import { getUser } from 'src/auth/decorators/get-user.decorator';
 import { User } from 'src/auth/user.entity';
+import { filter } from 'rxjs';
 
 @Controller('tasks')
 @UseGuards(AuthGuard())
 export class TasksController {
+  private logger = new Logger('TaskController');
   constructor(private taskService: TasksService) {}
   @Get()
   async getTasks(
     @Query() getTaskFilter: GetTaskFilterDto,
     @getUser() user: User,
   ): Promise<Task[]> {
+    this.logger.verbose(
+      `the user ${user.username} tries to find tasks with filter ${JSON.stringify(getTaskFilter)}`,
+    );
+
     return await this.taskService.getTasks(getTaskFilter, user);
   }
 

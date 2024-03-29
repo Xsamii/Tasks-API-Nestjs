@@ -1,9 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import 'dotenv/config';
+import * as dotenv from 'dotenv';
 import { TransformInterceptor } from './transform.interceptor';
 async function bootstrap() {
+  dotenv.config({
+    path: '../.env.stage.dev',
+  });
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptor());
